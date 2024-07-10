@@ -2,9 +2,9 @@
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
-import prisma from "@/lib/prisma";
+// import prisma from "@/lib/prisma";
 import { SignInButton, SignedIn, SignedOut, useUser } from "@clerk/nextjs";
-import { Collection } from "@prisma/client";
+// import { Collection } from "@prisma/client";
 import { Suspense, useEffect, useState } from "react";
 import CollectionList from "./CollectionList";
 
