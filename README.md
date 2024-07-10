@@ -11,3 +11,8 @@
 - clerk
 - shadcn-ui
 - next-themes (npm i next-themes)
+- prisma
+  - npm i @prisma/client
+  - npx prisma init --datasource-provider sqlite
+  - npx prisma migrate dev
+  - npx prisma studio
