@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { useUser } from "@clerk/nextjs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
+import CreateCollectionBtn from "@/components/CreateCollectionBtn";
 
 export default function CollectionList() {
   const { user } = useUser();
@@ -49,10 +50,15 @@ export default function CollectionList() {
 
   if (collections.length === 0) {
     return (
-      <Alert>
-        <AlertTitle>There are no collections yet</AlertTitle>
-        <AlertDescription>Create a collection to get started</AlertDescription>
-      </Alert>
+      <div className="flex flex-col gap-5">
+        <Alert>
+          <AlertTitle>There are no collections yet</AlertTitle>
+          <AlertDescription>
+            Create a collection to get started
+          </AlertDescription>
+        </Alert>
+        <CreateCollectionBtn />
+      </div>
     );
   }
 

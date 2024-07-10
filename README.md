@@ -16,3 +16,5 @@
   - npx prisma init --datasource-provider sqlite
   - npx prisma migrate dev
   - npx prisma studio
+- React hook form (npm i react-hook-form)
+- zod: For form Validation/ API validation
