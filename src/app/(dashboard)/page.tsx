@@ -88,9 +88,11 @@ function CollectionList() {
     return null; // Or handle loading state
   }
 
+  // Use a state to manage collections and loading state
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  // Move useEffect to the top level of the component
   useEffect(() => {
     const fetchCollections = async () => {
       try {
@@ -111,6 +113,7 @@ function CollectionList() {
     fetchCollections();
   }, [user]); // Ensure useEffect runs whenever user changes
 
+  // Now conditionally render based on loading and collections
   if (loading) {
     return (
       <div className="mt-5">
