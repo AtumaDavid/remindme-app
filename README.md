@@ -10,3 +10,4 @@
 
 - clerk
 - shadcn-ui
+- next-themes (npm i next-themes)
