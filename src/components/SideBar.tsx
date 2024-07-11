@@ -30,6 +30,12 @@ import {
 } from "./ui/select";
 import { CollectionColor, CollectionColors } from "@/lib/colorConstants";
 import { cn } from "@/lib/utils";
+import { Separator } from "./ui/separator";
+import { Button } from "./ui/button";
+import { createCollection } from "../../actions/collection";
+import { toast } from "./ui/use-toast";
+import { ReloadIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
 
 interface Props {
   open: boolean;
@@ -42,12 +48,37 @@ export default function SideBar({ open, onOpenChange }: Props) {
     defaultValues: {},
   });
 
-  const onSubmit = (data: createCollectionSchemaType) => {
+  const router = useRouter();
+
+  const onSubmit = async (data: createCollectionSchemaType) => {
     console.log("submitted", data);
+    try {
+      await createCollection(data);
+      // form.reset();
+      onOpenChange(false);
+      router.refresh();
+      toast({
+        title: "Success",
+        description: "Collection created successfully",
+      });
+    } catch (error: any) {
+      // alert("Error creating collection. Please try again.");
+      toast({
+        title: "Error",
+        description: "Something went wrong, please try again later",
+        variant: "destructive",
+      });
+      console.log(error);
+    }
+  };
+
+  const onOpenChangeWrapper = (open: boolean) => {
+    form.reset();
+    onOpenChange(open);
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={onOpenChangeWrapper}>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Add new collection</SheetTitle>
@@ -56,7 +87,10 @@ export default function SideBar({ open, onOpenChange }: Props) {
           </SheetDescription>
         </SheetHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 flex flex-col"
+          >
             <FormField
               control={form.control}
               name="name"
@@ -85,7 +119,7 @@ export default function SideBar({ open, onOpenChange }: Props) {
                         )}
                       >
                         <SelectValue
-                          placeholder="color"
+                          placeholder="Select color"
                           className="w-full h-8"
                         />
                       </SelectTrigger>
@@ -113,6 +147,23 @@ export default function SideBar({ open, onOpenChange }: Props) {
             />
           </form>
         </Form>
+        <div className="flex flex-col gap-3 mt-4">
+          <Separator />
+          <Button
+            disabled={form.formState.isSubmitting}
+            variant={"outline"}
+            onClick={form.handleSubmit(onSubmit)}
+            className={cn(
+              form.watch("color") &&
+                CollectionColors[form.getValues("color") as CollectionColor]
+            )}
+          >
+            Confirm
+            {form.formState.isSubmitting && (
+              <ReloadIcon className="ml-2 h-4 w-4 animate-spin" />
+            )}
+          </Button>
+        </div>
       </SheetContent>
     </Sheet>
   );
