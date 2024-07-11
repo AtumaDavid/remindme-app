@@ -45,7 +45,10 @@ interface Props {
 export default function SideBar({ open, onOpenChange }: Props) {
   const form = useForm<createCollectionSchemaType>({
     resolver: zodResolver(createCollectionSchema),
-    defaultValues: {},
+    defaultValues: {
+      name: "",
+      color: undefined,
+    },
   });
 
   const router = useRouter();
@@ -54,7 +57,6 @@ export default function SideBar({ open, onOpenChange }: Props) {
     console.log("submitted", data);
     try {
       await createCollection(data);
-      // form.reset();
       onOpenChange(false);
       router.refresh();
       toast({
@@ -62,7 +64,6 @@ export default function SideBar({ open, onOpenChange }: Props) {
         description: "Collection created successfully",
       });
     } catch (error: any) {
-      // alert("Error creating collection. Please try again.");
       toast({
         title: "Error",
         description: "Something went wrong, please try again later",
@@ -73,7 +74,10 @@ export default function SideBar({ open, onOpenChange }: Props) {
   };
 
   const onOpenChangeWrapper = (open: boolean) => {
-    form.reset();
+    form.reset({
+      name: "",
+      color: undefined,
+    });
     onOpenChange(open);
   };
 
@@ -98,7 +102,11 @@ export default function SideBar({ open, onOpenChange }: Props) {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Personal" {...field} />
+                    <Input
+                      placeholder="Personal"
+                      {...field}
+                      value={field.value || ""}
+                    />
                   </FormControl>
                   <FormDescription>Collection name</FormDescription>
                 </FormItem>
@@ -111,7 +119,10 @@ export default function SideBar({ open, onOpenChange }: Props) {
                 <FormItem>
                   <FormLabel>Color</FormLabel>
                   <FormControl>
-                    <Select onValueChange={(color) => field.onChange(color)}>
+                    <Select
+                      onValueChange={(color) => field.onChange(color)}
+                      value={field.value || undefined}
+                    >
                       <SelectTrigger
                         className={cn(
                           "w-full h-8 text-white",
