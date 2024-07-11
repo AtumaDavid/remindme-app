@@ -2,7 +2,8 @@
 import CreateCollectionBtn from "@/components/CreateCollectionBtn";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
-import prisma from "../../lib/prisma";
+// import prisma from "../../lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { Suspense } from "react";
 
