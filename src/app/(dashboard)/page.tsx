@@ -51,15 +51,18 @@ async function CollectionList() {
   const user = await currentUser();
 
   if (!user) {
+    console.log("No user found, redirecting to sign in");
     return <RedirectToSignIn />;
   }
 
   try {
+    console.log(`Fetching collections for user ${user.id}`);
     const collections = await prisma.collection.findMany({
       where: {
         userId: user.id,
       },
     });
+    console.log(`Found ${collections.length} collections`);
 
     if (collections.length === 0) {
       return (
@@ -87,7 +90,17 @@ async function CollectionList() {
     );
   } catch (error) {
     console.error("Error fetching collections: ", error);
-    return <div>Error fetching collections</div>;
+
+    let errorMessage = "An unknown error occurred";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (error && typeof error === "object" && "message" in error) {
+      errorMessage = String(error.message);
+    } else if (typeof error === "string") {
+      errorMessage = error;
+    }
+
+    return <div>Error fetching collections: {errorMessage}</div>;
   }
 }
 
