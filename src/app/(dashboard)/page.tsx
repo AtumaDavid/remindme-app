@@ -1,4 +1,3 @@
-// import CollectionCard from "@/components/CollectionCard";
 import CollectionCard from "@/components/CollectionCard";
 import CreateCollectionBtn from "@/components/CreateCollectionBtn";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -24,7 +23,8 @@ async function WelcomMsg() {
   const user = await currentUser();
 
   if (!user) {
-    return <div>error</div>;
+    console.error("Error: User not authenticated");
+    return <div>Error: User not authenticated</div>;
   }
 
   return (
@@ -47,33 +47,10 @@ function WelcomeMsgFallback() {
   );
 }
 
-// async function CollectionList() {
-//   const user = await currentUser();
-//   const collections = await prisma.collection.findMany({
-//     // include: {
-//     //   tasks: true,
-//     // },
-//     where: {
-//       userId: user?.id,
-//     },
-//   });
-
-//   if (collections.length === 0) {
-//     return (
-//       <div className="flex flex-col gap-5">
-//         <Alert>
-//           <AlertTitle>There are no collections yet!</AlertTitle>
-//           <AlertDescription>
-//             Create a collection to get started
-//           </AlertDescription>
-//         </Alert>
-//         <CreateCollectionBtn />
-//       </div>
-//     );
-//   }
 async function CollectionList() {
   const user = await currentUser();
   if (!user) {
+    console.error("Error: User not authenticated");
     return <div>Error: User not authenticated</div>;
   }
 
