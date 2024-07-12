@@ -58,6 +58,9 @@ async function CollectionList() {
   try {
     console.log(`Fetching collections for user ${user.id}`);
     const collections = await prisma.collection.findMany({
+      include: {
+        tasks: true,
+      },
       where: {
         userId: user.id,
       },
