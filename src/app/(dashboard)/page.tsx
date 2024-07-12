@@ -47,40 +47,69 @@ function WelcomeMsgFallback() {
   );
 }
 
+// async function CollectionList() {
+//   const user = await currentUser();
+//   const collections = await prisma.collection.findMany({
+//     // include: {
+//     //   tasks: true,
+//     // },
+//     where: {
+//       userId: user?.id,
+//     },
+//   });
+
+//   if (collections.length === 0) {
+//     return (
+//       <div className="flex flex-col gap-5">
+//         <Alert>
+//           <AlertTitle>There are no collections yet!</AlertTitle>
+//           <AlertDescription>
+//             Create a collection to get started
+//           </AlertDescription>
+//         </Alert>
+//         <CreateCollectionBtn />
+//       </div>
+//     );
+//   }
 async function CollectionList() {
   const user = await currentUser();
-  const collections = await prisma.collection.findMany({
-    // include: {
-    //   tasks: true,
-    // },
-    where: {
-      userId: user?.id,
-    },
-  });
-
-  if (collections.length === 0) {
-    return (
-      <div className="flex flex-col gap-5">
-        <Alert>
-          <AlertTitle>There are no collections yet!</AlertTitle>
-          <AlertDescription>
-            Create a collection to get started
-          </AlertDescription>
-        </Alert>
-        <CreateCollectionBtn />
-      </div>
-    );
+  if (!user) {
+    return <div>Error: User not authenticated</div>;
   }
 
-  return (
-    <>
-      <CreateCollectionBtn />
-      <div className="flex flex-col gap-4 mt-6">
-        {collections.map((collection) => (
-          <CollectionCard key={collection.id} collection={collection} />
-        ))}
-        {/* Collections: {collections.length} */}
-      </div>
-    </>
-  );
+  try {
+    const collections = await prisma.collection.findMany({
+      where: {
+        userId: user.id,
+      },
+    });
+
+    if (collections.length === 0) {
+      return (
+        <div className="flex flex-col gap-5">
+          <Alert>
+            <AlertTitle>There are no collections yet!</AlertTitle>
+            <AlertDescription>
+              Create a collection to get started
+            </AlertDescription>
+          </Alert>
+          <CreateCollectionBtn />
+        </div>
+      );
+    }
+
+    return (
+      <>
+        <CreateCollectionBtn />
+        <div className="flex flex-col gap-4 mt-6">
+          {collections.map((collection) => (
+            <CollectionCard key={collection.id} collection={collection} />
+          ))}
+        </div>
+      </>
+    );
+  } catch (error) {
+    console.error("Error fetching collections: ", error);
+    return <div>Error fetching collections</div>;
+  }
 }
