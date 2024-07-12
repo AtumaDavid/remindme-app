@@ -1,4 +1,3 @@
-// import CollectionCard from "@/components/CollectionCard";
 import CollectionCard from "@/components/CollectionCard";
 import CreateCollectionBtn from "@/components/CreateCollectionBtn";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -9,13 +8,19 @@ import { currentUser } from "@clerk/nextjs/server";
 import { Suspense } from "react";
 
 export default async function Home() {
+  const user = await currentUser();
+
+  if (!user) {
+    return <RedirectToSignIn />;
+  }
+
   return (
     <>
       <Suspense fallback={<WelcomeMsgFallback />}>
         <WelcomMsg />
       </Suspense>
       <Suspense fallback={<div>Loading collections...</div>}>
-        <CollectionList />
+        <CollectionList userId={user.id} />
       </Suspense>
     </>
   );
@@ -48,45 +53,11 @@ function WelcomeMsgFallback() {
   );
 }
 
-// async function CollectionList() {
-//   const user = await currentUser();
-//   const collections = await prisma.collection.findMany({
-//     // include: {
-//     //   tasks: true,
-//     // },
-//     where: {
-//       userId: user?.id,
-//     },
-//   });
-
-//   if (collections.length === 0) {
-//     return (
-//       <div className="flex flex-col gap-5">
-//         <Alert>
-//           <AlertTitle>There are no collections yet!</AlertTitle>
-//           <AlertDescription>
-//             Create a collection to get started
-//           </AlertDescription>
-//         </Alert>
-//         <CreateCollectionBtn />
-//       </div>
-//     );
-//   }
-
-async function CollectionList() {
-  const user = await currentUser();
-  // if (!user) {
-  //   return <div>Error: User not authenticated</div>;
-  // }
-  if (!user) {
-    // Redirect to sign-in page if not authenticated
-    return <RedirectToSignIn />;
-  }
-
+async function CollectionList({ userId }: any) {
   try {
     const collections = await prisma.collection.findMany({
       where: {
-        userId: user?.id,
+        userId: userId,
       },
     });
 
